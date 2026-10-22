@@ -3,280 +3,87 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="경주시 아파트 가격지수, 실거래가, 평당가격과 입지 조건을 한눈에 비교하는 인터랙티브 대시보드" />
-  <meta name="theme-color" content="#0c1730" />
-  <title>경주 아파트 인사이트</title>
+  <meta name="description" content="한국부동산원 공식지표와 경주시 아파트 시장 분석을 함께 보는 전문 리서치 대시보드" />
+  <meta name="theme-color" content="#071f4e" />
+  <title>경주 주거시장 리서치</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="./styles.css?v=topnav2" />
+  <link rel="stylesheet" href="./styles.css?v=report1" />
 </head>
 <body>
-  <div class="app-shell">
-    <main>
-      <header class="topbar">
-        <div class="brand-cluster">
-          <a class="brand-mark" href="#overview" aria-label="경주 아파트 인사이트 홈">
-            <span class="brand-icon">경</span>
-            <span>GJ<br />INSIGHT</span>
-          </a>
-          <div class="topbar-title">
-            <p class="eyebrow">GYEONGJU HOUSING DATA</p>
-            <h1>경주 아파트 인사이트</h1>
-          </div>
-        </div>
-        <nav class="side-nav" aria-label="대시보드 메뉴">
-        <a class="nav-item active" href="#overview" data-label="한눈에 보기" aria-label="한눈에 보기">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13h6V4H4v9Zm0 7h6v-5H4v5Zm10 0h6v-9h-6v9Zm0-16v5h6V4h-6Z"/></svg>
-          <span>개요</span>
-        </a>
-        <a class="nav-item" href="#rankings" data-label="실거래 순위" aria-label="실거래 순위">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16v2H4v-2Zm1-4h3V9H5v6Zm5 0h4V3h-4v12Zm6 0h3V6h-3v9Z"/></svg>
-          <span>순위</span>
-        </a>
-        <a class="nav-item" href="#location" data-label="입지 분석" aria-label="입지 분석">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.1 7 13 7 13s7-7.9 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"/></svg>
-          <span>입지</span>
-        </a>
-        <a class="nav-item" href="#market" data-label="시장 흐름" aria-label="시장 흐름">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 17 5-5 3 3 7-8 1.5 1.4-8.4 9.7L9 15l-3.6 3.4L4 17Z"/></svg>
-          <span>시장</span>
-        </a>
-        </nav>
-        <div class="top-actions">
-          <label class="select-wrap">
-            <span class="filter-label">지역</span>
-            <select id="citySelect" aria-label="시군구 선택">
-              <option value="gyeongju">경주시 전체</option>
-            </select>
-          </label>
-          <label class="select-wrap dong-wrap">
-            <span class="filter-label">읍·면·동</span>
-            <select id="dongSelect" aria-label="읍면동 선택">
-              <option value="all">전체 동</option>
-              <option value="hwangseong">황성동</option>
-              <option value="yonggang">용강동</option>
-              <option value="dongcheon">동천동</option>
-              <option value="seonggeon">성건동</option>
-              <option value="hyeongok">현곡면</option>
-              <option value="geoncheon">건천읍</option>
-              <option value="oedong">외동읍</option>
-            </select>
-          </label>
-          <label class="date-wrap">
-            <span class="filter-label">기준일</span>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h2v2h6V2h2v2h3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h3V2Zm13 8H4v10h16V10ZM4 8h16V6H4v2Z"/></svg>
-            <input id="dateSelect" type="date" value="2026-09-30" min="2024-01-01" max="2026-10-22" aria-label="기준일 선택" />
-          </label>
-        </div>
-      </header>
-
-      <div class="content-wrap">
-        <section class="hero" id="overview">
-          <div class="hero-copy">
-            <div class="status-row">
-              <span class="live-dot"><i></i> <b>DATA OVERVIEW</b></span>
-              <span class="sample-badge">선택 조건 즉시 반영</span>
-            </div>
-            <h2>경주의 집값 흐름,<br /><em>한눈에 읽다.</em></h2>
-            <p>실거래 가격과 생활 인프라를 함께 비교해 더 나은 주거 결정을 돕습니다.</p>
-          </div>
-          <div class="hero-visual" aria-hidden="true">
-            <div class="orb orb-one"></div><div class="orb orb-two"></div>
-            <svg viewBox="0 0 460 260" role="img">
-              <defs><linearGradient id="lineGradient" x1="0" x2="1"><stop stop-color="#59e6c3"/><stop offset="1" stop-color="#7aa7ff"/></linearGradient></defs>
-              <path class="city-line" d="M15 218 58 196 92 204 130 155 172 168 212 109 251 124 290 74 325 92 371 48 438 24" />
-              <path class="city-fill" d="M15 218 58 196 92 204 130 155 172 168 212 109 251 124 290 74 325 92 371 48 438 24V245H15Z" />
-              <g class="buildings"><path d="M40 245v-55h36v55M93 245v-86h47v86M160 245v-42h34v42M215 245v-111h49v111M283 245v-69h38v69M343 245V99h57v146" /></g>
-              <circle cx="371" cy="48" r="6" fill="#59e6c3" /><circle cx="371" cy="48" r="13" fill="none" stroke="#59e6c3" opacity=".35" />
-            </svg>
-          </div>
-          <div class="type-switch" role="tablist" aria-label="거래 유형">
-            <button class="type-btn active" type="button" data-type="sale" role="tab" aria-selected="true">매매</button>
-            <button class="type-btn" type="button" data-type="jeonse" role="tab" aria-selected="false">전세</button>
-            <button class="type-btn" type="button" data-type="monthly" role="tab" aria-selected="false">월세</button>
-          </div>
-        </section>
-
-        <section class="kpi-grid" aria-label="핵심 시장 지표">
-          <div class="kpi-summary-head">
-            <strong id="reportDateLabel">2026.09.30 기준</strong>
-            <span id="activeFilterSummary" aria-live="polite">경주시 전체 · 시연용</span>
-          </div>
-          <article class="kpi-card primary">
-            <div class="kpi-head"><span>실거래 가격지수</span><span class="icon-chip">↗</span></div>
-            <div class="kpi-value"><strong id="indexValue">103.8</strong><small>2024.01 = 100</small></div>
-            <div class="kpi-foot"><span class="change up" id="indexChange">▲ 0.7%</span><span>전월 대비</span></div>
-          </article>
-          <article class="kpi-card">
-            <div class="kpi-head"><span>중위 거래가격</span><span class="icon-chip soft">₩</span></div>
-            <div class="kpi-value"><strong id="medianValue">3.42억</strong><small id="medianUnit">전용 84㎡ 기준</small></div>
-            <div class="kpi-foot"><span class="change up" id="medianChange">▲ 2.1%</span><span>전월 대비</span></div>
-          </article>
-          <article class="kpi-card">
-            <div class="kpi-head"><span>월 거래량</span><span class="icon-chip soft">#</span></div>
-            <div class="kpi-value"><strong id="volumeValue">186건</strong><small>신고일 기준 집계</small></div>
-            <div class="kpi-foot"><span class="change down" id="volumeChange">▼ 4.6%</span><span>전월 대비</span></div>
-          </article>
-          <article class="kpi-card">
-            <div class="kpi-head"><span>평균 평당가격</span><span class="icon-chip soft">坪</span></div>
-            <div class="kpi-value"><strong id="pyValue">1,108만</strong><small>공급면적 환산</small></div>
-            <div class="kpi-foot"><span class="change up" id="pyChange">▲ 1.3%</span><span>전월 대비</span></div>
-          </article>
-        </section>
-
-        <section class="dashboard-grid" id="market">
-          <article class="panel chart-panel">
-            <div class="panel-head">
-              <div><p class="section-kicker">PRICE MOVEMENT</p><h3><span id="chartTypeLabel">매매</span> 실거래가 가격지수</h3></div>
-              <div class="legend"><span><i class="legend-line"></i>가격지수</span><span><i class="legend-bar"></i>변동률</span></div>
-            </div>
-            <div class="chart-wrap" id="priceChart" aria-label="2024년 1월부터 2026년 9월 가격지수 차트"></div>
-            <div class="chart-summary"><span id="chartStartLabel">24.12</span><strong id="chartNarrative">완만한 회복세 · 최근 6개월 +2.8</strong><span id="chartEndLabel">26.09</span></div>
-          </article>
-
-          <article class="panel pulse-panel">
-            <div class="panel-head">
-              <div><p class="section-kicker">MARKET PULSE</p><h3>경주 시장 온도</h3></div>
-              <span class="info-badge">Balanced</span>
-            </div>
-            <div class="gauge" style="--score: 62">
-              <div class="gauge-center"><strong>62</strong><span>관망 우세</span></div>
-            </div>
-            <div class="meter-list">
-              <div><span>매수 문의</span><b>58</b><i><em style="width:58%"></em></i></div>
-              <div><span>거래 속도</span><b>46</b><i><em style="width:46%"></em></i></div>
-              <div><span>가격 탄력</span><b>67</b><i><em style="width:67%"></em></i></div>
-            </div>
-            <section class="reb-live-card" aria-live="polite" aria-label="한국부동산원 공식지표">
-              <div class="reb-live-head">
-                <span class="reb-mark">REB</span>
-                <div><strong>한국부동산원 공식지표</strong><small id="rebScope">경주시 전체 · R-ONE</small></div>
-                <span class="reb-status" id="rebStatus">불러오는 중</span>
-              </div>
-              <div class="reb-live-grid">
-                <div class="reb-stat">
-                  <span id="rebPriceLabel">매매 가격지수</span>
-                  <strong id="rebPriceValue">—</strong>
-                  <small id="rebPriceMeta">공표자료 조회 중</small>
-                </div>
-                <div class="reb-spark" id="rebSpark" aria-label="한국부동산원 가격지수 최근 추이"></div>
-                <div class="reb-stat volume">
-                  <span>아파트 매매거래</span>
-                  <strong id="rebVolumeValue">—</strong>
-                  <small id="rebVolumeMeta">공표자료 조회 중</small>
-                </div>
-              </div>
-            </section>
-            <p class="insight-note"><span>AI 요약</span> 도심 신축과 역세권 선호는 견조하지만, 외곽권은 가격보다 실거주 편의성에 민감합니다.</p>
-          </article>
-        </section>
-
-        <section class="ranking-section" id="rankings">
-          <div class="section-title-row">
-            <div><p class="section-kicker">TOP 10 RANKING</p><h2>지금 가장 눈에 띄는 단지</h2></div>
-            <p>행을 선택하면 거래 요약을 확인할 수 있습니다.</p>
-          </div>
-          <div class="ranking-grid">
-            <article class="panel ranking-card">
-              <div class="ranking-head"><div><span class="rank-number">01</span><h3>실거래가 TOP 10</h3></div><span class="unit-label" id="priceUnit">단위: 억원</span></div>
-              <div class="ranking-table" id="tradeRanking"></div>
-            </article>
-            <article class="panel ranking-card">
-              <div class="ranking-head"><div><span class="rank-number mint">02</span><h3>평당가격 TOP 10</h3></div><span class="unit-label">단위: 만원/3.3㎡</span></div>
-              <div class="ranking-table" id="pyRanking"></div>
-            </article>
-          </div>
-        </section>
-
-        <section class="location-section" id="location">
-          <div class="section-title-row light">
-            <div><p class="section-kicker">LOCATION INTELLIGENCE</p><h2>생활권으로 보는 경주</h2></div>
-            <p>분석 항목을 누르면 지도와 해설이 함께 바뀝니다.</p>
-          </div>
-          <div class="location-tabs" role="tablist" aria-label="입지 분석 항목">
-            <button class="location-tab active" type="button" data-location="school"><span>01</span>학군</button>
-            <button class="location-tab" type="button" data-location="traffic"><span>02</span>생활교통</button>
-            <button class="location-tab" type="button" data-location="rail"><span>03</span>KTX·철도</button>
-            <button class="location-tab" type="button" data-location="metro"><span>04</span>지하철·GTX</button>
-            <button class="location-tab" type="button" data-location="amenity"><span>05</span>생활편의</button>
-          </div>
-          <div class="location-stage">
-            <div class="map-card" id="locationMap" aria-label="경주시 생활권 개념도">
-              <svg viewBox="0 0 760 500" role="img" aria-labelledby="mapTitle">
-                <title id="mapTitle">경주시 주요 생활권과 교통 거점 개념도</title>
-                <defs><filter id="shadow"><feDropShadow dx="0" dy="7" stdDeviation="7" flood-opacity=".16"/></filter></defs>
-                <path class="river" d="M82 28c83 92 79 166 29 244-42 65-25 140 48 204" />
-                <path class="road major" d="M109 399C245 312 330 301 443 241s174-62 250-145" />
-                <path class="road" d="M175 86c81 45 144 112 184 205s93 137 190 167" />
-                <path class="road" d="M82 219c145 2 239 38 352 99s195 73 267 51" />
-                <g class="district-label"><text x="275" y="198">현곡권</text><text x="397" y="297">도심권</text><text x="527" y="235">황성·용강권</text><text x="590" y="396">보문·불국권</text></g>
-                <g id="mapPins"></g>
-              </svg>
-              <div class="map-legend"><span><i class="pin current"></i>선택 항목</span><span><i class="pin normal"></i>주요 생활권</span></div>
-            </div>
-            <aside class="analysis-card" aria-live="polite">
-              <div class="analysis-index"><span id="analysisNumber">01</span><i></i></div>
-              <p class="section-kicker" id="analysisTag">SCHOOL DISTRICT</p>
-              <h3 id="analysisTitle">도심 학군 접근성</h3>
-              <p class="analysis-lead" id="analysisLead">황성·용강·현곡 생활권은 초·중학교 접근성과 학원가 이동 편의가 상대적으로 우수합니다.</p>
-              <div class="score-row"><span>입지 매력도</span><strong id="analysisScore">86</strong><small>/ 100</small></div>
-              <div class="score-track"><i id="scoreTrack" style="width:86%"></i></div>
-              <ul id="analysisPoints"></ul>
-              <div class="fact-box" id="analysisFact"><b>확인 포인트</b><span>배정 학교는 주소와 학년도에 따라 달라질 수 있어 학교알리미·교육청 확인이 필요합니다.</span></div>
-            </aside>
-          </div>
-        </section>
-
-        <section class="market-detail">
-          <article class="panel volume-panel">
-            <div class="panel-head"><div><p class="section-kicker">TRANSACTION VOLUME</p><h3>월간 거래량</h3></div><span class="unit-label">단위: 건</span></div>
-            <div class="volume-chart" id="volumeChart" aria-label="최근 12개월 거래량 막대 차트"></div>
-          </article>
-          <article class="panel checklist-panel">
-            <div class="panel-head"><div><p class="section-kicker">DECISION CHECK</p><h3>이번 달 체크포인트</h3></div><span class="issue-count">3 issues</span></div>
-            <div class="check-item"><span class="check-icon up">↗</span><div><strong>신축·역세권 쏠림</strong><p>KTX 접근성이 좋은 서부권과 도심 신축의 가격 방어력이 상대적으로 높습니다.</p></div></div>
-            <div class="check-item"><span class="check-icon neutral">→</span><div><strong>전세가율 확인</strong><p>매매가뿐 아니라 동일 면적 전세 거래와 보증금 안정성을 함께 비교하세요.</p></div></div>
-            <div class="check-item"><span class="check-icon warn">!</span><div><strong>신고 시차 주의</strong><p>실거래 자료는 계약 후 신고까지 시차가 있어 최신월 거래량이 적게 보일 수 있습니다.</p></div></div>
-          </article>
-        </section>
-
-        <section class="source-strip" aria-label="데이터 출처 안내">
-          <div><span class="source-mark">DATA</span><p><strong>데이터 사용 안내</strong><br />REB 공식지표 카드는 한국부동산원 API 자료이며, 그 외 실거래 수치와 순위는 기능 시연용 예시입니다.</p></div>
-          <div class="source-links">
-            <a href="https://www.reb.or.kr/r-one/" target="_blank" rel="noreferrer">한국부동산원 R-ONE ↗</a>
-            <a href="https://rt.molit.go.kr/" target="_blank" rel="noreferrer">국토부 실거래가 ↗</a>
-            <a href="https://www.schoolinfo.go.kr/" target="_blank" rel="noreferrer">학교알리미 ↗</a>
-            <a href="https://www.gyeongju.go.kr/" target="_blank" rel="noreferrer">경주시청 ↗</a>
-          </div>
-        </section>
-      </div>
-      <footer><span>GYEONGJU APARTMENT INSIGHT</span><span>Prototype dashboard · 2026</span></footer>
-    </main>
-  </div>
-
-  <div class="detail-drawer" id="detailDrawer" aria-hidden="true" role="dialog" aria-labelledby="drawerTitle">
-    <button class="drawer-close" type="button" aria-label="상세 정보 닫기">×</button>
-    <div class="drawer-hero">
-      <div class="drawer-title-block">
-        <span class="drawer-label">SELECTED COMPLEX</span>
-        <h2 id="drawerTitle">단지명</h2>
-        <p id="drawerAddress">경주시</p>
-        <span class="map-caption"><i></i>선택 단지 위치</span>
-      </div>
-      <div class="drawer-map">
-        <iframe id="drawerMap" title="선택한 아파트 위치 지도" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-        <a id="drawerMapLink" href="#" target="_blank" rel="noreferrer">큰 지도에서 보기 ↗</a>
-      </div>
+  <header class="institutional-header">
+    <div class="header-inner">
+      <a class="brand" href="#overview" aria-label="경주 주거시장 리서치 홈"><span class="brand-box">GJ</span><span><b>경주 주거시장 리서치</b><small>GYEONGJU HOUSING DATA LAB</small></span></a>
+      <div class="header-meta"><span class="live-pill"><i></i> REB LIVE</span><span>데이터 기준 <b id="headerDate">2026.09.30</b></span></div>
     </div>
-    <div class="drawer-data-row">
-      <div class="drawer-price"><small>최근 거래</small><strong id="drawerPrice">—</strong></div>
-      <div class="drawer-grid"><div><span>전용면적</span><b id="drawerArea">84㎡</b></div><div><span>기준일</span><b id="drawerDate">2026.09.30</b></div><div><span>생활권</span><b id="drawerZone">도심권</b></div><div><span>데이터</span><b>시연용</b></div></div>
-    </div>
-    <button class="drawer-action" type="button" data-scroll-location>입지 분석으로 이동</button>
-  </div>
-  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+  </header>
+  <nav class="section-nav" aria-label="대시보드 섹션"><div class="section-nav-inner">
+    <a class="active" href="#overview">시장 개요</a><a href="#official">공식 지표</a><a href="#rankings">단지 순위</a><a href="#location">입지 분석</a><a href="#data-roadmap">데이터 연계</a>
+    <div class="source-badges"><span>한국부동산원 API</span><span>공공데이터 추천</span></div>
+  </div></nav>
 
-  <script src="./app.js?v=topnav1"></script>
+  <main class="page-shell">
+    <section class="page-intro" id="overview"><div><p class="eyebrow">GYEONGJU APARTMENT MARKET · RESEARCH BOARD</p><h1>경주 아파트 시장을<br /><em>데이터로 해석합니다.</em></h1><p class="intro-copy">공식 가격지수, 거래 순위, 생활권과 광역교통을 한 흐름으로 비교하는 경주시 주거시장 리서치입니다.</p></div><div class="intro-stamp"><strong id="introMonth">2026.09</strong><span>MONTHLY BRIEF</span><small>경주시 전체</small></div></section>
+
+    <section class="filter-rail" aria-label="조회 조건">
+      <div class="filter-title"><span>조회 조건</span><small>선택 조건이 모든 분석 카드에 반영됩니다.</small></div>
+      <label><span>지역</span><select id="citySelect" aria-label="시군구 선택"><option value="gyeongju">경상북도 경주시</option></select></label>
+      <label><span>읍·면·동</span><select id="dongSelect" aria-label="읍면동 선택"><option value="all">경주시 전체</option><option value="hwangseong">황성동</option><option value="yonggang">용강동</option><option value="dongcheon">동천동</option><option value="seonggeon">성건동</option><option value="hyeongok">현곡면</option><option value="geoncheon">건천읍</option><option value="oedong">외동읍</option></select></label>
+      <label><span>기준일</span><input id="dateSelect" type="date" value="2026-09-30" min="2024-01-01" max="2026-10-22" aria-label="기준일 선택" /></label>
+      <div class="filter-status"><i></i><span id="activeFilterSummary">경주시 전체 · 2026.09.30</span></div>
+    </section>
+
+    <section class="report-section summary-section">
+      <div class="section-heading"><span>1</span><div><p>EXECUTIVE SUMMARY</p><h2>시장 동향 요약</h2></div></div>
+      <article class="summary-banner"><div class="summary-icon">↗</div><p id="marketSummary"><b>경주시 공식지표를 불러오는 중입니다.</b> 선택 기준일 이전의 최신 공표자료를 자동으로 조회합니다.</p><span class="summary-tag">OFFICIAL + ANALYSIS</span></article>
+      <div class="quick-metrics">
+        <article><span>분석 거래유형</span><strong id="quickType">매매</strong><small>아래 순위 탭 기준</small></article>
+        <article><span>중위 거래가격</span><strong id="medianValue">3.42억</strong><small id="medianUnit">전용 84㎡ 분석 샘플</small></article>
+        <article><span>평균 평당가격</span><strong id="pyValue">1,108만</strong><small>분석 샘플 · 공급면적 환산</small></article>
+        <article><span>분석 거래량</span><strong id="volumeValue">186건</strong><small>선택 조건 기반 시연값</small></article>
+      </div>
+    </section>
+
+    <section class="report-section" id="official">
+      <div class="section-heading"><span>2</span><div><p>OFFICIAL MARKET INDEX</p><h2>한국부동산원 공식 가격지수</h2></div><div class="section-side"><span class="api-state" id="rebStatus">공식 API 조회 중</span><small id="rebScope">경주시 · R-ONE 월간</small></div></div>
+      <div class="official-cards">
+        <article class="official-card sale"><div class="official-label"><i></i><span>아파트 매매가격지수</span></div><strong id="rebSaleValue">—</strong><p id="rebSaleChange">공표자료 조회 중</p><small id="rebSaleMeta">기준: 2021.06 = 100</small></article>
+        <article class="official-card jeonse"><div class="official-label"><i></i><span>아파트 전세가격지수</span></div><strong id="rebJeonseValue">—</strong><p id="rebJeonseChange">공표자료 조회 중</p><small id="rebJeonseMeta">기준: 2021.06 = 100</small></article>
+        <article class="official-card monthly"><div class="official-label"><i></i><span>아파트 월세가격지수</span></div><strong id="rebMonthlyValue">—</strong><p id="rebMonthlyChange">공표자료 조회 중</p><small id="rebMonthlyMeta">기준: 2021.06 = 100</small></article>
+        <article class="official-card volume"><div class="official-label"><i></i><span>아파트 매매거래량</span></div><strong id="rebVolumeValue">—</strong><p id="rebVolumeChange">공표자료 조회 중</p><small id="rebVolumeMeta">단위: 호</small></article>
+      </div>
+      <article class="panel trend-panel"><div class="panel-header"><div><span class="panel-kicker">PRICE INDEX TREND</span><h3>경주시 아파트 가격지수 추이</h3></div><div class="chart-legend"><span><i class="sale"></i>매매</span><span><i class="jeonse"></i>전세</span><span><i class="monthly"></i>월세</span></div></div><div class="official-chart" id="officialChart"><div class="chart-loading">공식 시계열을 불러오는 중입니다.</div></div><div class="chart-footer"><span id="officialChartRange">최근 12개월</span><span>출처: 한국부동산원 R-ONE · 선택일 이전 최신 공표값</span></div></article>
+    </section>
+
+    <section class="report-section" id="rankings">
+      <div class="section-heading"><span>3</span><div><p>COMPLEX RANKING & DETAIL</p><h2>단지별 시장 순위</h2></div><div class="section-side"><small>순위는 현재 시연 데이터입니다.</small></div></div>
+      <div class="transaction-tabs" role="tablist" aria-label="거래 유형"><button class="type-btn active" type="button" data-type="sale" role="tab" aria-selected="true">매매</button><button class="type-btn" type="button" data-type="jeonse" role="tab" aria-selected="false">전세</button><button class="type-btn" type="button" data-type="monthly" role="tab" aria-selected="false">월세</button><span id="rankingContext">경주시 전체 · 2026.09.30</span></div>
+      <div class="ranking-grid">
+        <article class="panel ranking-card"><div class="panel-header compact"><div><span class="panel-kicker">TRANSACTION TOP 10</span><h3>실거래가 TOP 10</h3></div><span class="unit-label" id="priceUnit">단위: 억원</span></div><div class="ranking-table" id="tradeRanking"></div></article>
+        <article class="panel ranking-card"><div class="panel-header compact"><div><span class="panel-kicker">PRICE PER 3.3㎡ TOP 10</span><h3>평당가격 TOP 10</h3></div><span class="unit-label">단위: 만원/3.3㎡</span></div><div class="ranking-table" id="pyRanking"></div></article>
+      </div>
+      <article class="selected-complex" id="selectedComplex" aria-live="polite"><div class="selected-copy"><span class="selected-label">SELECTED COMPLEX</span><h3 id="selectedName">경주 뉴센트로 에일린의 뜰</h3><p id="selectedAddress">경주시 황성동</p><div class="selected-metrics"><div><span>최근 거래</span><strong id="selectedPrice">5.85억</strong></div><div><span>전용면적</span><strong id="selectedArea">84㎡</strong></div><div><span>기준일</span><strong id="selectedDate">2026.09.30</strong></div><div><span>생활권</span><strong id="selectedZone">황성·용강권</strong></div></div><div class="selected-note"><b>데이터 상태</b><span>현재 단지 순위·거래가는 화면 기능 검증을 위한 분석 샘플입니다. 국토부 실거래 API 키 연결 시 공식 신고자료로 대체됩니다.</span></div><button class="link-button" type="button" data-scroll-location>선택 단지 입지 분석 보기 →</button></div><div class="inline-map"><iframe id="selectedMap" title="선택한 아파트 위치 지도" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe><a id="selectedMapLink" href="#" target="_blank" rel="noreferrer">큰 지도에서 보기 ↗</a></div></article>
+    </section>
+
+    <section class="report-section" id="location">
+      <div class="section-heading"><span>4</span><div><p>LOCATION INTELLIGENCE</p><h2>생활권·교통 입지 분석</h2></div></div>
+      <div class="location-tabs" role="tablist" aria-label="입지 분석 항목"><button class="location-tab active" type="button" data-location="school"><span>01</span>학군</button><button class="location-tab" type="button" data-location="traffic"><span>02</span>생활교통</button><button class="location-tab" type="button" data-location="rail"><span>03</span>KTX·철도</button><button class="location-tab" type="button" data-location="metro"><span>04</span>지하철·GTX</button><button class="location-tab" type="button" data-location="amenity"><span>05</span>생활편의</button></div>
+      <div class="location-grid"><article class="panel concept-map"><svg viewBox="0 0 760 450" role="img" aria-labelledby="mapTitle"><title id="mapTitle">경주시 주요 생활권 개념도</title><path class="river" d="M82 20c83 92 79 156 29 224-42 60-25 128 48 186"/><path class="road major" d="M109 369C245 292 330 281 443 221s174-62 250-145"/><path class="road" d="M175 66c81 45 144 112 184 195s93 127 190 157"/><path class="road" d="M82 199c145 2 239 38 352 89s195 68 267 51"/><g class="district-label"><text x="275" y="178">현곡권</text><text x="397" y="277">도심권</text><text x="527" y="215">황성·용강권</text><text x="590" y="366">보문·불국권</text></g><g id="mapPins"></g></svg><div class="map-legend"><span><i class="active"></i>선택 항목</span><span><i></i>주요 거점</span></div></article><article class="analysis-card"><div class="analysis-top"><span id="analysisNumber">01</span><p id="analysisTag">SCHOOL DISTRICT</p></div><h3 id="analysisTitle">도심 학군 접근성</h3><p class="analysis-lead" id="analysisLead"></p><div class="score-row"><span>입지 매력도</span><strong id="analysisScore">86</strong><small>/100</small></div><div class="score-track"><i id="scoreTrack" style="width:86%"></i></div><ul id="analysisPoints"></ul><div class="fact-box" id="analysisFact"></div></article></div>
+    </section>
+
+    <section class="report-section" id="data-roadmap">
+      <div class="section-heading"><span>5</span><div><p>DATA COVERAGE & ROADMAP</p><h2>공식 데이터 연계 현황</h2></div><div class="section-side"><small>실제 연결 여부를 투명하게 표시합니다.</small></div></div>
+      <div class="data-grid">
+        <article class="data-card connected"><div><span class="data-icon">REB</span><span class="state">연결됨</span></div><h3>한국부동산원 R-ONE</h3><p>매매·전세·월세 가격지수와 경주시 아파트 매매거래량을 서버에서 직접 조회합니다.</p><ul><li>월간 가격 흐름과 변동 방향</li><li>선택일 이전 최신 공표값</li></ul><a href="https://www.reb.or.kr/r-one/" target="_blank" rel="noreferrer">공식 서비스 ↗</a></article>
+        <article class="data-card priority"><div><span class="data-icon">01</span><span class="state">1순위 추천</span></div><h3>국토부 아파트 실거래</h3><p>단지명·면적·층·계약일·거래금액을 공식 신고자료로 교체할 핵심 데이터입니다.</p><ul><li>아파트 매매 실거래가</li><li>아파트 전월세 보증금·월세</li></ul><a href="https://www.data.go.kr/data/15126469/openapi.do" target="_blank" rel="noreferrer">매매 API ↗</a></article>
+        <article class="data-card"><div><span class="data-icon">02</span><span class="state">2순위 추천</span></div><h3>인구·세대 변화</h3><p>행정동별 인구, 세대수, 연령구조를 가격 흐름과 함께 보면 실수요 기반을 판단할 수 있습니다.</p><ul><li>주민등록 인구·세대수</li><li>고령화·연령대 구성</li></ul><a href="https://jumin.mois.go.kr/" target="_blank" rel="noreferrer">행안부 통계 ↗</a></article>
+        <article class="data-card"><div><span class="data-icon">03</span><span class="state">3순위 추천</span></div><h3>학교·대중교통 접근성</h3><p>학교 기본정보와 반경 500m 버스정류소를 좌표로 결합하면 단지별 입지점수를 정교화할 수 있습니다.</p><ul><li>나이스 학교기본정보</li><li>국토부 TAGO 정류소정보</li></ul><a href="https://open.neis.go.kr/" target="_blank" rel="noreferrer">나이스 API ↗</a></article>
+      </div>
+      <div class="key-notice"><span>KEY</span><div><strong>왜 아직 실거래 원자료가 없나요?</strong><p>한국부동산원 R-ONE 키와 공공데이터포털·나이스 키는 서로 다른 인증 체계입니다. 현재 제공된 R-ONE 키로 공식 지수는 연결했으며, 국토부 실거래·버스·학교 원자료는 각 포털의 별도 서비스 키가 있어야 운영 데이터로 전환할 수 있습니다.</p></div></div>
+    </section>
+  </main>
+  <footer><div><b>경주 주거시장 리서치</b><span>한국부동산원 공식지표 + 경주시 분석 대시보드</span></div><p>공식지표 외 단지 순위·입지점수는 분석 샘플이며 투자 판단의 단독 근거로 사용할 수 없습니다.</p></footer>
+  <script src="./app-report.js?v=report1"></script>
 </body>
 </html>

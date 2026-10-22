@@ -3,14 +3,14 @@ import { readFile, writeFile } from "node:fs/promises";
 const [html, css, app] = await Promise.all([
   readFile(new URL("../site/index.html", import.meta.url), "utf8"),
   readFile(new URL("../site/styles.css", import.meta.url), "utf8"),
-  readFile(new URL("../site/app.js", import.meta.url), "utf8"),
+  readFile(new URL("../site/app-report.js", import.meta.url), "utf8"),
 ]);
 
 const worker = `const assets = {
   "/": { body: ${JSON.stringify(html)}, type: "text/html; charset=utf-8" },
   "/index.html": { body: ${JSON.stringify(html)}, type: "text/html; charset=utf-8" },
   "/styles.css": { body: ${JSON.stringify(css)}, type: "text/css; charset=utf-8" },
-  "/app.js": { body: ${JSON.stringify(app)}, type: "text/javascript; charset=utf-8" },
+  "/app-report.js": { body: ${JSON.stringify(app)}, type: "text/javascript; charset=utf-8" },
 };
 
 const priceTables = {
@@ -71,22 +71,25 @@ async function fetchRone(env, tableId, clsId, targetYear, targetYm) {
 async function handleReb(request, env) {
   if (!env.REB_API_KEY) return json({ error: "REB API is not configured" }, 503);
   const url = new URL(request.url);
-  const type = Object.hasOwn(priceTables, url.searchParams.get("type")) ? url.searchParams.get("type") : "sale";
   const requestedDate = /^\\d{4}-\\d{2}-\\d{2}$/.test(url.searchParams.get("date") || "") ? url.searchParams.get("date") : new Date().toISOString().slice(0, 10);
   const targetYm = requestedDate.slice(0, 7).replace("-", "");
   const targetYear = Number(requestedDate.slice(0, 4));
   try {
-    const [priceRows, volumeRows] = await Promise.all([
-      fetchRone(env, priceTables[type].id, "510100", targetYear, targetYm),
+    const [saleRows, jeonseRows, monthlyRows, volumeRows] = await Promise.all([
+      fetchRone(env, priceTables.sale.id, "510100", targetYear, targetYm),
+      fetchRone(env, priceTables.jeonse.id, "510100", targetYear, targetYm),
+      fetchRone(env, priceTables.monthly.id, "510100", targetYear, targetYm),
       fetchRone(env, "A_2024_00554", "510211", targetYear, targetYm),
     ]);
     return json({
       source: "한국부동산원 R-ONE",
       scope: "경주시",
       requestedDate,
-      type,
-      typeLabel: priceTables[type].label,
-      price: normalize(priceRows, targetYm),
+      indices: {
+        sale: normalize(saleRows, targetYm),
+        jeonse: normalize(jeonseRows, targetYm),
+        monthly: normalize(monthlyRows, targetYm),
+      },
       volume: normalize(volumeRows, targetYm),
       fetchedAt: new Date().toISOString(),
     }, 200, "private, max-age=1800");
