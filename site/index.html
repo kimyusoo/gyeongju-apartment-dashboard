@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./styles.css?v=reb2" />
 </head>
 <body>
   <div class="app-shell">
@@ -146,6 +146,26 @@
               <div><span>거래 속도</span><b>46</b><i><em style="width:46%"></em></i></div>
               <div><span>가격 탄력</span><b>67</b><i><em style="width:67%"></em></i></div>
             </div>
+            <section class="reb-live-card" aria-live="polite" aria-label="한국부동산원 공식지표">
+              <div class="reb-live-head">
+                <span class="reb-mark">REB</span>
+                <div><strong>한국부동산원 공식지표</strong><small id="rebScope">경주시 전체 · R-ONE</small></div>
+                <span class="reb-status" id="rebStatus">불러오는 중</span>
+              </div>
+              <div class="reb-live-grid">
+                <div class="reb-stat">
+                  <span id="rebPriceLabel">매매 가격지수</span>
+                  <strong id="rebPriceValue">—</strong>
+                  <small id="rebPriceMeta">공표자료 조회 중</small>
+                </div>
+                <div class="reb-spark" id="rebSpark" aria-label="한국부동산원 가격지수 최근 추이"></div>
+                <div class="reb-stat volume">
+                  <span>아파트 매매거래</span>
+                  <strong id="rebVolumeValue">—</strong>
+                  <small id="rebVolumeMeta">공표자료 조회 중</small>
+                </div>
+              </div>
+            </section>
             <p class="insight-note"><span>AI 요약</span> 도심 신축과 역세권 선호는 견조하지만, 외곽권은 가격보다 실거주 편의성에 민감합니다.</p>
           </article>
         </section>
@@ -220,8 +240,9 @@
         </section>
 
         <section class="source-strip" aria-label="데이터 출처 안내">
-          <div><span class="source-mark">DATA</span><p><strong>데이터 사용 안내</strong><br />화면의 수치와 순위는 기능 시연을 위한 예시 데이터입니다. 실제 의사결정 전 공식 원문을 확인하세요.</p></div>
+          <div><span class="source-mark">DATA</span><p><strong>데이터 사용 안내</strong><br />REB 공식지표 카드는 한국부동산원 API 자료이며, 그 외 실거래 수치와 순위는 기능 시연용 예시입니다.</p></div>
           <div class="source-links">
+            <a href="https://www.reb.or.kr/r-one/" target="_blank" rel="noreferrer">한국부동산원 R-ONE ↗</a>
             <a href="https://rt.molit.go.kr/" target="_blank" rel="noreferrer">국토부 실거래가 ↗</a>
             <a href="https://www.schoolinfo.go.kr/" target="_blank" rel="noreferrer">학교알리미 ↗</a>
             <a href="https://www.gyeongju.go.kr/" target="_blank" rel="noreferrer">경주시청 ↗</a>
@@ -254,6 +275,6 @@
   </div>
   <div class="drawer-backdrop" id="drawerBackdrop"></div>
 
-  <script src="./app.js"></script>
+  <script src="./app.js?v=reb2"></script>
 </body>
 </html>

@@ -55,6 +55,7 @@ const districtApartments = {
 let activeType = 'sale';
 let activeDistrict = 'all';
 let activeDate = '2026-09-30';
+let rebRequestId = 0;
 const $ = (q, root=document) => root.querySelector(q);
 const $$ = (q, root=document) => [...root.querySelectorAll(q)];
 
@@ -125,7 +126,56 @@ function renderMarket(type) {
   $('#pyValue').textContent = d.py; $('#pyChange').textContent = d.pyChange;
   $('#chartTypeLabel').textContent = d.label; $('#chartNarrative').textContent = d.narrative; $('#priceUnit').textContent = d.unit;
   $$('.type-btn').forEach(btn => { const on = btn.dataset.type === type; btn.classList.toggle('active', on); btn.setAttribute('aria-selected', String(on)); });
-  updateDateLabels(); drawPriceChart(d.indices, d.changes); renderRanking('#tradeRanking', d.top); renderRanking('#pyRanking', d.pyTop); renderVolume(d.volumeBars);
+  updateDateLabels(); drawPriceChart(d.indices, d.changes); renderRanking('#tradeRanking', d.top); renderRanking('#pyRanking', d.pyTop); renderVolume(d.volumeBars); loadRebData();
+}
+
+function formatOfficialChange(value) {
+  if (!Number.isFinite(value)) return '전월 비교 없음';
+  const arrow = value > 0 ? '▲' : value < 0 ? '▼' : '―';
+  return `${arrow} ${Math.abs(value).toFixed(2)}% 전월 대비`;
+}
+
+function drawRebSparkline(series) {
+  if (!series?.length) { $('#rebSpark').innerHTML = ''; return; }
+  const values = series.map(item => item.value);
+  const w = 116, h = 38, pad = 3;
+  const min = Math.min(...values), max = Math.max(...values);
+  const spread = Math.max(max - min, .01);
+  const x = i => pad + i * (w - pad * 2) / Math.max(values.length - 1, 1);
+  const y = v => pad + (max - v) * (h - pad * 2) / spread;
+  const line = values.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+  const area = `${line} L${x(values.length - 1).toFixed(1)},${h - pad} L${pad},${h - pad} Z`;
+  $('#rebSpark').innerHTML = `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="최근 ${values.length}개월 공식 가격지수 추이"><path class="reb-spark-area" d="${area}"/><path class="reb-spark-line" d="${line}"/><circle cx="${x(values.length - 1)}" cy="${y(values.at(-1))}" r="2.5"/></svg>`;
+}
+
+async function loadRebData() {
+  const requestId = ++rebRequestId;
+  $('#rebStatus').textContent = '불러오는 중';
+  $('#rebStatus').className = 'reb-status loading';
+  $('#rebScope').textContent = activeDistrict === 'all' ? '경주시 전체 · R-ONE' : `${districtConfig[activeDistrict].label} 선택 · 공식값은 경주시 전체`;
+  try {
+    const response = await fetch(`/api/reb?type=${encodeURIComponent(activeType)}&date=${encodeURIComponent(activeDate)}`, { headers: { accept: 'application/json' } });
+    if (!response.ok) throw new Error(`REB ${response.status}`);
+    const data = await response.json();
+    if (requestId !== rebRequestId) return;
+    $('#rebPriceLabel').textContent = `${data.typeLabel} 가격지수`;
+    $('#rebPriceValue').textContent = data.price.latest ? data.price.latest.value.toFixed(2) : '—';
+    $('#rebPriceMeta').textContent = data.price.latest ? `${data.price.latest.label} · ${formatOfficialChange(data.price.change)}` : '선택일 이전 공표자료 없음';
+    $('#rebVolumeValue').textContent = data.volume.latest ? `${Math.round(data.volume.latest.value).toLocaleString('ko-KR')}호` : '—';
+    $('#rebVolumeMeta').textContent = data.volume.latest ? `${data.volume.latest.label} · ${formatOfficialChange(data.volume.change)}` : '선택일 이전 공표자료 없음';
+    $('#rebStatus').textContent = '공식 API';
+    $('#rebStatus').className = 'reb-status ready';
+    drawRebSparkline(data.price.series);
+  } catch (error) {
+    if (requestId !== rebRequestId) return;
+    $('#rebStatus').textContent = '연결 지연';
+    $('#rebStatus').className = 'reb-status error';
+    $('#rebPriceValue').textContent = '—';
+    $('#rebPriceMeta').textContent = '한국부동산원 API 재조회 필요';
+    $('#rebVolumeValue').textContent = '—';
+    $('#rebVolumeMeta').textContent = '대시보드의 다른 기능은 정상 이용 가능';
+    drawRebSparkline([]);
+  }
 }
 
 function drawPriceChart(values, changes) {
