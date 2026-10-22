@@ -234,11 +234,22 @@
 
   <div class="detail-drawer" id="detailDrawer" aria-hidden="true" role="dialog" aria-labelledby="drawerTitle">
     <button class="drawer-close" type="button" aria-label="상세 정보 닫기">×</button>
-    <span class="drawer-label">SELECTED COMPLEX</span>
-    <h2 id="drawerTitle">단지명</h2>
-    <p id="drawerAddress">경주시</p>
-    <div class="drawer-price"><small>최근 거래</small><strong id="drawerPrice">—</strong></div>
-    <div class="drawer-grid"><div><span>전용면적</span><b id="drawerArea">84㎡</b></div><div><span>기준일</span><b id="drawerDate">2026.09.30</b></div><div><span>생활권</span><b id="drawerZone">도심권</b></div><div><span>데이터</span><b>시연용</b></div></div>
+    <div class="drawer-hero">
+      <div class="drawer-title-block">
+        <span class="drawer-label">SELECTED COMPLEX</span>
+        <h2 id="drawerTitle">단지명</h2>
+        <p id="drawerAddress">경주시</p>
+        <span class="map-caption"><i></i>선택 단지 위치</span>
+      </div>
+      <div class="drawer-map">
+        <iframe id="drawerMap" title="선택한 아파트 위치 지도" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <a id="drawerMapLink" href="#" target="_blank" rel="noreferrer">큰 지도에서 보기 ↗</a>
+      </div>
+    </div>
+    <div class="drawer-data-row">
+      <div class="drawer-price"><small>최근 거래</small><strong id="drawerPrice">—</strong></div>
+      <div class="drawer-grid"><div><span>전용면적</span><b id="drawerArea">84㎡</b></div><div><span>기준일</span><b id="drawerDate">2026.09.30</b></div><div><span>생활권</span><b id="drawerZone">도심권</b></div><div><span>데이터</span><b>시연용</b></div></div>
+    </div>
     <button class="drawer-action" type="button" data-scroll-location>입지 분석으로 이동</button>
   </div>
   <div class="drawer-backdrop" id="drawerBackdrop"></div>
