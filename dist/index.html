@@ -47,19 +47,29 @@
         </div>
         <div class="top-actions">
           <label class="select-wrap">
-            <span class="sr-only">분석 지역</span>
-            <select id="areaSelect">
-              <option value="all">경주시 전체</option>
-              <option value="hwangseong">황성·용강권</option>
-              <option value="hyeongok">현곡권</option>
-              <option value="downtown">도심권</option>
-              <option value="oe-dong">외동·불국권</option>
+            <span class="filter-label">지역</span>
+            <select id="citySelect" aria-label="시군구 선택">
+              <option value="gyeongju">경주시 전체</option>
             </select>
           </label>
-          <button class="date-button" type="button" aria-label="기준일 선택">
+          <label class="select-wrap dong-wrap">
+            <span class="filter-label">읍·면·동</span>
+            <select id="dongSelect" aria-label="읍면동 선택">
+              <option value="all">전체 동</option>
+              <option value="hwangseong">황성동</option>
+              <option value="yonggang">용강동</option>
+              <option value="dongcheon">동천동</option>
+              <option value="seonggeon">성건동</option>
+              <option value="hyeongok">현곡면</option>
+              <option value="geoncheon">건천읍</option>
+              <option value="oedong">외동읍</option>
+            </select>
+          </label>
+          <label class="date-wrap">
+            <span class="filter-label">기준일</span>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h2v2h6V2h2v2h3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h3V2Zm13 8H4v10h16V10ZM4 8h16V6H4v2Z"/></svg>
-            2026. 09
-          </button>
+            <input id="dateSelect" type="date" value="2026-09-30" min="2024-01-01" max="2026-10-22" aria-label="기준일 선택" />
+          </label>
         </div>
       </header>
 
@@ -67,8 +77,8 @@
         <section class="hero" id="overview">
           <div class="hero-copy">
             <div class="status-row">
-              <span class="live-dot"><i></i> 월간 리포트</span>
-              <span class="sample-badge">시연용 데이터</span>
+              <span class="live-dot"><i></i> <b id="reportDateLabel">2026.09.30 기준</b></span>
+              <span class="sample-badge" id="activeFilterSummary" aria-live="polite">경주시 전체 · 시연용</span>
             </div>
             <h2>경주의 집값 흐름,<br /><em>한눈에 읽다.</em></h2>
             <p>실거래 가격과 생활 인프라를 함께 비교해 더 나은 주거 결정을 돕습니다.</p>
@@ -120,7 +130,7 @@
               <div class="legend"><span><i class="legend-line"></i>가격지수</span><span><i class="legend-bar"></i>변동률</span></div>
             </div>
             <div class="chart-wrap" id="priceChart" aria-label="2024년 1월부터 2026년 9월 가격지수 차트"></div>
-            <div class="chart-summary"><span>24.01</span><strong id="chartNarrative">완만한 회복세 · 최근 6개월 +2.8</strong><span>26.09</span></div>
+            <div class="chart-summary"><span id="chartStartLabel">24.12</span><strong id="chartNarrative">완만한 회복세 · 최근 6개월 +2.8</strong><span id="chartEndLabel">26.09</span></div>
           </article>
 
           <article class="panel pulse-panel">
@@ -228,7 +238,7 @@
     <h2 id="drawerTitle">단지명</h2>
     <p id="drawerAddress">경주시</p>
     <div class="drawer-price"><small>최근 거래</small><strong id="drawerPrice">—</strong></div>
-    <div class="drawer-grid"><div><span>전용면적</span><b id="drawerArea">84㎡</b></div><div><span>거래월</span><b>2026.09</b></div><div><span>생활권</span><b id="drawerZone">도심권</b></div><div><span>데이터</span><b>시연용</b></div></div>
+    <div class="drawer-grid"><div><span>전용면적</span><b id="drawerArea">84㎡</b></div><div><span>기준일</span><b id="drawerDate">2026.09.30</b></div><div><span>생활권</span><b id="drawerZone">도심권</b></div><div><span>데이터</span><b>시연용</b></div></div>
     <button class="drawer-action" type="button" data-scroll-location>입지 분석으로 이동</button>
   </div>
   <div class="drawer-backdrop" id="drawerBackdrop"></div>

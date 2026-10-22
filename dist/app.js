@@ -31,20 +31,101 @@ const locationData = {
   amenity: { num:'05', tag:'DAILY AMENITIES', title:'생활편의 밀도', lead:'도심·황성·용강권은 장보기, 의료, 공공서비스 접근성이 높고 외곽은 차량 이동 범위를 함께 봐야 합니다.', score:81, points:['황성·용강: 상업·의료 인프라 밀집','도심권: 행정·전통시장 접근성','보문·외곽: 관광 수요와 일상 편의 분리 확인'], fact:'같은 생활권도 단지 출입구 위치에 따라 도보 접근성이 달라질 수 있습니다.', pins:[['중심상권',421,286],['황성상권',549,210],['보문생활권',616,332]] }
 };
 
+const districtConfig = {
+  all: { label:'경주시 전체', dong:'전체', factor:1, indexOffset:0, volumeShare:1, volatility:1, zone:'경주시' },
+  hwangseong: { label:'황성동', dong:'황성동', factor:1.14, indexOffset:2.1, volumeShare:.25, volatility:1.08, zone:'황성·용강권' },
+  yonggang: { label:'용강동', dong:'용강동', factor:1.08, indexOffset:1.3, volumeShare:.18, volatility:1.04, zone:'황성·용강권' },
+  dongcheon: { label:'동천동', dong:'동천동', factor:.94, indexOffset:-.4, volumeShare:.12, volatility:.96, zone:'도심권' },
+  seonggeon: { label:'성건동', dong:'성건동', factor:.90, indexOffset:-.9, volumeShare:.10, volatility:.92, zone:'도심권' },
+  hyeongok: { label:'현곡면', dong:'현곡면', factor:1.04, indexOffset:.8, volumeShare:.16, volatility:1.02, zone:'현곡권' },
+  geoncheon: { label:'건천읍', dong:'건천읍', factor:.92, indexOffset:-.6, volumeShare:.09, volatility:.94, zone:'서부권' },
+  oedong: { label:'외동읍', dong:'외동읍', factor:.88, indexOffset:-1.2, volumeShare:.10, volatility:.90, zone:'외동권' }
+};
+
+const districtApartments = {
+  hwangseong:['힐스테이트 황성','경주 뉴센트로 에일린의 뜰','협성휴포레 황성','e편한세상 황성','황성주공1차','황성주공2차','황성주공3차','황성현대5차','럭키황성','청우3차'],
+  yonggang:['용황협성휴포레','두산위브트레지움','용강주공','용강삼환나우빌','용강서한타운','협성휴포레용황','경주승삼','용강동서','대신3차','용강청구'],
+  dongcheon:['동천우방타운','동천현대','동천주공','동천월드메르디앙','보우마니아','동천그린파크','동천청우','동원맨션','동천로얄','동천한신'],
+  seonggeon:['성건보우','성건주공','성건현대','성건우방','성건동서','성건삼성','성건로얄','성건청우','성건한신','성건대우'],
+  hyeongok:['현곡푸르지오','경주센트럴푸르지오','새한센시빌','금장주공','금장현대','현곡세정스위츠리','금장우방','현곡삼성','금장청구','현곡한신'],
+  geoncheon:['KTX신경주역 더메트로 줌파크','신경주 반도유보라 아이비파크','건천휴먼시아','건천우방명사마을','건천주공','건천현대','건천삼성','건천청구','건천동서','건천한신'],
+  oedong:['경주외동 미소지움','외동부영1단지','외동부영2단지','외동삼부르네상스','외동사랑으로부영','외동우방타운','외동주공','외동현대','외동청구','외동한신']
+};
+
 let activeType = 'sale';
+let activeDistrict = 'all';
+let activeDate = '2026-09-30';
 const $ = (q, root=document) => root.querySelector(q);
 const $$ = (q, root=document) => [...root.querySelectorAll(q)];
 
+function parseDateParts(value) {
+  const [year, month, day] = value.split('-').map(Number);
+  return { year, month, day, monthIndex: year * 12 + month - 1 };
+}
+
+function scalePrice(raw, factor) {
+  if (raw.includes('/')) {
+    const [deposit, rent] = raw.replace('만','').split('/').map(v=>Number(v.replaceAll(',','')));
+    const scaledDeposit=Math.round(deposit*factor/100)*100;
+    return `${scaledDeposit.toLocaleString('ko-KR')}/${Math.round(rent*factor)}만`;
+  }
+  if (raw.endsWith('억')) return `${(Number(raw.replace('억',''))*factor).toFixed(2)}억`;
+  if (raw.endsWith('만')) {
+    const value=Number(raw.replace('만','').replaceAll(',',''))*factor;
+    return `${value<100?value.toFixed(1):Math.round(value).toLocaleString('ko-KR')}만`;
+  }
+  return raw;
+}
+
+function formatPct(value) { return `${value>=0?'▲':'▼'} ${Math.abs(value).toFixed(1)}%`; }
+
+function buildViewData(type) {
+  const base=marketData[type], cfg=districtConfig[activeDistrict], date=parseDateParts(activeDate);
+  const monthDiff=date.monthIndex-(2026*12+8), dateTrend=1+monthDiff*.0032;
+  const priceFactor=cfg.factor*dateTrend;
+  const daysInMonth=new Date(date.year,date.month,0).getDate();
+  const completion=Math.max(.08,Math.min(1,date.day/daysInMonth));
+  const season=1+Math.sin(date.month*.82)*.08;
+  const indices=base.indices.map((v,i)=>Number((v+cfg.indexOffset+monthDiff*.065+(i-base.indices.length+1)*.01).toFixed(2)));
+  const changes=base.changes.map((v,i)=>Number((v*cfg.volatility+Math.sin((i+date.month)*.7)*.025).toFixed(2)));
+  const volume=Math.max(1,Math.round(Number(base.volume.replace(/\D/g,''))*cfg.volumeShare*season*completion));
+  const volumeDelta=(Math.cos((date.monthIndex+activeDistrict.length)*.8)*7.2)*cfg.volatility;
+  const rankSource=activeDistrict==='all'?base.top:base.top.map((row,i)=>[districtApartments[activeDistrict][i],cfg.dong,row[2],row[3],cfg.zone]);
+  const pySource=activeDistrict==='all'?base.pyTop:base.pyTop.map((row,i)=>[districtApartments[activeDistrict][i],cfg.dong,row[2],row[3],cfg.zone]);
+  return {
+    ...base,
+    index:(Number(base.index)+cfg.indexOffset+monthDiff*.065).toFixed(1),
+    indexChange:formatPct(changes.at(-1)),
+    median:scalePrice(base.median,priceFactor),
+    medianChange:formatPct((Number(base.medianChange.match(/[\d.]+/)[0])+cfg.indexOffset*.08+monthDiff*.025)*Math.sign(dateTrend)),
+    volume:`${volume.toLocaleString('ko-KR')}건`, volumeChange:formatPct(volumeDelta),
+    py:scalePrice(base.py,priceFactor), pyChange:formatPct(Number(base.pyChange.match(/[\d.]+/)[0])+cfg.indexOffset*.06+monthDiff*.02),
+    indices, changes,
+    narrative:`${cfg.label} ${monthDiff<0?'과거 시점':'최근'} 흐름 · 선택일 기준 재계산`,
+    volumeBars:base.volumeBars.map((v,i)=>Math.max(1,Math.round(v*cfg.volumeShare*(1+Math.sin((i+date.month)*.6)*.06)*(i===base.volumeBars.length-1?completion:1)))),
+    top:rankSource.map(r=>[r[0],r[1],scalePrice(r[2],priceFactor),r[3],r[4]]),
+    pyTop:pySource.map(r=>[r[0],r[1],scalePrice(r[2],priceFactor),r[3],r[4]])
+  };
+}
+
+function updateDateLabels() {
+  const d=parseDateParts(activeDate); const start=new Date(d.year,d.month-1-21,1);
+  $('#reportDateLabel').textContent=`${d.year}.${String(d.month).padStart(2,'0')}.${String(d.day).padStart(2,'0')} 기준`;
+  $('#chartStartLabel').textContent=`${String(start.getFullYear()).slice(2)}.${String(start.getMonth()+1).padStart(2,'0')}`;
+  $('#chartEndLabel').textContent=`${String(d.year).slice(2)}.${String(d.month).padStart(2,'0')}`;
+  $('#activeFilterSummary').textContent=`${districtConfig[activeDistrict].label} · 시연용`;
+}
+
 function renderMarket(type) {
   activeType = type;
-  const d = marketData[type];
+  const d = buildViewData(type);
   $('#indexValue').textContent = d.index; $('#indexChange').textContent = d.indexChange;
   $('#medianValue').textContent = d.median; $('#medianUnit').textContent = d.medianUnit; $('#medianChange').textContent = d.medianChange;
   $('#volumeValue').textContent = d.volume; $('#volumeChange').textContent = d.volumeChange;
   $('#pyValue').textContent = d.py; $('#pyChange').textContent = d.pyChange;
   $('#chartTypeLabel').textContent = d.label; $('#chartNarrative').textContent = d.narrative; $('#priceUnit').textContent = d.unit;
   $$('.type-btn').forEach(btn => { const on = btn.dataset.type === type; btn.classList.toggle('active', on); btn.setAttribute('aria-selected', String(on)); });
-  drawPriceChart(d.indices, d.changes); renderRanking('#tradeRanking', d.top); renderRanking('#pyRanking', d.pyTop); renderVolume(d.volumeBars);
+  updateDateLabels(); drawPriceChart(d.indices, d.changes); renderRanking('#tradeRanking', d.top); renderRanking('#pyRanking', d.pyTop); renderVolume(d.volumeBars);
 }
 
 function drawPriceChart(values, changes) {
@@ -66,18 +147,19 @@ function renderRanking(target, rows) {
   $$('.ranking-row',$(target)).forEach(row=>{row.addEventListener('click',()=>openDrawer(row.dataset));row.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openDrawer(row.dataset);}});});
 }
 
-function renderVolume(values){ const months=['10','11','12','01','02','03','04','05','06','07','08','09']; const max=Math.max(...values); $('#volumeChart').innerHTML=values.map((v,i)=>`<div class="volume-column" title="${i<3?'2025':'2026'}.${months[i]} · ${v}건"><i style="height:${v/max*84}%"></i><span>${months[i]}</span></div>`).join(''); }
+function renderVolume(values){ const end=parseDateParts(activeDate); const labels=values.map((_,i)=>{const d=new Date(end.year,end.month-1-(values.length-1-i),1);return {year:d.getFullYear(),month:String(d.getMonth()+1).padStart(2,'0')}}); const max=Math.max(...values); $('#volumeChart').innerHTML=values.map((v,i)=>`<div class="volume-column" title="${labels[i].year}.${labels[i].month} · ${v}건"><i style="height:${v/max*84}%"></i><span>${labels[i].month}</span></div>`).join(''); }
 
 function renderLocation(key){ const d=locationData[key]; $$('.location-tab').forEach(btn=>btn.classList.toggle('active',btn.dataset.location===key)); $('#analysisNumber').textContent=d.num;$('#analysisTag').textContent=d.tag;$('#analysisTitle').textContent=d.title;$('#analysisLead').textContent=d.lead;$('#analysisScore').textContent=d.score;$('#scoreTrack').style.width=d.score+'%';$('#analysisPoints').innerHTML=d.points.map(p=>`<li>${p}</li>`).join('');$('#analysisFact').innerHTML=`<b>확인 포인트</b><span>${d.fact}</span>`; $('#mapPins').innerHTML=d.pins.map((pin,i)=>`<g class="map-pin ${i===0?'active':''}" transform="translate(${pin[1]},${pin[2]})"><circle r="${i===0?29:24}"/><text y="4">${pin[0]}</text></g>`).join(''); }
 
-function openDrawer(data){ $('#drawerTitle').textContent=data.name;$('#drawerAddress').textContent=data.address;$('#drawerPrice').textContent=data.price;$('#drawerArea').textContent=data.area;$('#drawerZone').textContent=data.zone;$('#detailDrawer').classList.add('open');$('#drawerBackdrop').classList.add('open');$('#detailDrawer').setAttribute('aria-hidden','false');$('.drawer-close').focus(); }
+function openDrawer(data){ const d=parseDateParts(activeDate); $('#drawerTitle').textContent=data.name;$('#drawerAddress').textContent=data.address;$('#drawerPrice').textContent=data.price;$('#drawerArea').textContent=data.area;$('#drawerZone').textContent=data.zone;$('#drawerDate').textContent=`${d.year}.${String(d.month).padStart(2,'0')}.${String(d.day).padStart(2,'0')}`;$('#detailDrawer').classList.add('open');$('#drawerBackdrop').classList.add('open');$('#detailDrawer').setAttribute('aria-hidden','false');$('.drawer-close').focus(); }
 function closeDrawer(){ $('#detailDrawer').classList.remove('open');$('#drawerBackdrop').classList.remove('open');$('#detailDrawer').setAttribute('aria-hidden','true'); }
 
 $$('.type-btn').forEach(btn=>btn.addEventListener('click',()=>renderMarket(btn.dataset.type)));
 $$('.location-tab').forEach(btn=>btn.addEventListener('click',()=>renderLocation(btn.dataset.location)));
 $('.drawer-close').addEventListener('click',closeDrawer);$('#drawerBackdrop').addEventListener('click',closeDrawer);document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer();});
 $('[data-scroll-location]').addEventListener('click',()=>{closeDrawer();setTimeout(()=>$('#location').scrollIntoView({behavior:'smooth'}),100);});
-$('#areaSelect').addEventListener('change',e=>{ const labels={all:'경주시 전체',hwangseong:'황성·용강권',hyeongok:'현곡권',downtown:'도심권','oe-dong':'외동·불국권'}; const note=$('.sample-badge');note.textContent=labels[e.target.value]+' · 시연용';setTimeout(()=>note.textContent='시연용 데이터',1800); });
+$('#dongSelect').addEventListener('change',e=>{ activeDistrict=e.target.value; renderMarket(activeType); });
+$('#dateSelect').addEventListener('change',e=>{ if(!e.target.value)return; activeDate=e.target.value; renderMarket(activeType); });
 
 const navObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){$$('.nav-item').forEach(n=>n.classList.toggle('active',n.getAttribute('href')==='#'+entry.target.id));}}),{rootMargin:'-35% 0px -55%',threshold:0});
 ['overview','rankings','location','market'].forEach(id=>{const el=document.getElementById(id);if(el)navObserver.observe(el);});
