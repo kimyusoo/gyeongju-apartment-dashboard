@@ -9,16 +9,23 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="./styles.css?v=reb2" />
+  <link rel="stylesheet" href="./styles.css?v=topnav1" />
 </head>
 <body>
   <div class="app-shell">
-    <aside class="sidebar" aria-label="대시보드 메뉴">
-      <a class="brand-mark" href="#overview" aria-label="경주 아파트 인사이트 홈">
-        <span class="brand-icon">경</span>
-        <span>GJ<br />INSIGHT</span>
-      </a>
-      <nav class="side-nav">
+    <main>
+      <header class="topbar">
+        <div class="brand-cluster">
+          <a class="brand-mark" href="#overview" aria-label="경주 아파트 인사이트 홈">
+            <span class="brand-icon">경</span>
+            <span>GJ<br />INSIGHT</span>
+          </a>
+          <div class="topbar-title">
+            <p class="eyebrow">GYEONGJU HOUSING DATA</p>
+            <h1>경주 아파트 인사이트</h1>
+          </div>
+        </div>
+        <nav class="side-nav" aria-label="대시보드 메뉴">
         <a class="nav-item active" href="#overview" data-label="한눈에 보기" aria-label="한눈에 보기">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13h6V4H4v9Zm0 7h6v-5H4v5Zm10 0h6v-9h-6v9Zm0-16v5h6V4h-6Z"/></svg>
           <span>개요</span>
@@ -35,16 +42,7 @@
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 17 5-5 3 3 7-8 1.5 1.4-8.4 9.7L9 15l-3.6 3.4L4 17Z"/></svg>
           <span>시장</span>
         </a>
-      </nav>
-      <div class="side-foot" aria-label="지역 코드">47<br /><strong>130</strong></div>
-    </aside>
-
-    <main>
-      <header class="topbar">
-        <div>
-          <p class="eyebrow">GYEONGJU HOUSING DATA</p>
-          <h1>경주 아파트 인사이트</h1>
-        </div>
+        </nav>
         <div class="top-actions">
           <label class="select-wrap">
             <span class="filter-label">지역</span>
@@ -77,8 +75,8 @@
         <section class="hero" id="overview">
           <div class="hero-copy">
             <div class="status-row">
-              <span class="live-dot"><i></i> <b id="reportDateLabel">2026.09.30 기준</b></span>
-              <span class="sample-badge" id="activeFilterSummary" aria-live="polite">경주시 전체 · 시연용</span>
+              <span class="live-dot"><i></i> <b>DATA OVERVIEW</b></span>
+              <span class="sample-badge">선택 조건 즉시 반영</span>
             </div>
             <h2>경주의 집값 흐름,<br /><em>한눈에 읽다.</em></h2>
             <p>실거래 가격과 생활 인프라를 함께 비교해 더 나은 주거 결정을 돕습니다.</p>
@@ -101,6 +99,10 @@
         </section>
 
         <section class="kpi-grid" aria-label="핵심 시장 지표">
+          <div class="kpi-summary-head">
+            <strong id="reportDateLabel">2026.09.30 기준</strong>
+            <span id="activeFilterSummary" aria-live="polite">경주시 전체 · 시연용</span>
+          </div>
           <article class="kpi-card primary">
             <div class="kpi-head"><span>실거래 가격지수</span><span class="icon-chip">↗</span></div>
             <div class="kpi-value"><strong id="indexValue">103.8</strong><small>2024.01 = 100</small></div>
@@ -275,6 +277,6 @@
   </div>
   <div class="drawer-backdrop" id="drawerBackdrop"></div>
 
-  <script src="./app.js?v=reb2"></script>
+  <script src="./app.js?v=topnav1"></script>
 </body>
 </html>
